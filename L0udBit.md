@@ -289,3 +289,86 @@ Right there the listed Windows `run keys` that will cause the program referenced
 
 > Flag: `HKU\S-1-5-21-2918068850-3100921079-2521427286-1308\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\WinUpadate`
 
+## L0udBit_32
+> What is the registry.data.string written in the WinUpadate key?
+
+Looking at the log details we found in previous task, we see:
+
+![](img/L0udBit/20250129201403.png)
+
+> Flag: `c:\windows\system32\microsoft\crypto\rsa\machinekeys\UpdaterCore.exe`
+
+## L0udBit_33
+> What is the name of the MITRE ATT&CK tactic utilized?
+
+As mentioned in the [L0udBit_31](#l0udbit_31) under the `Note`, tactic utilized is called `Persistence`.
+
+> Flag: `Persistence`
+
+## L0udBit_34
+> What is the name of the MITRE ATT&CK technique utilized?
+
+As mentioned in the [L0udBit_31](#l0udbit_31) under the `Note`, technique utilized is called `Boot or Logon Autostart Execution`.
+
+> Flag: `Boot or Logon Autostart Execution`
+
+## L0udBit_35
+> And finally, what is the name of the MITRE ATT&CK subtechnique utilized?
+
+As mentioned in the [L0udBit_31](#l0udbit_31) under the `Note`, subtechnique utilized is called `Registry Run Keys / Startup Folder`.
+
+> Flag: `Registry Run Keys / Startup Folder`
+
+## L0udBit_36
+> What is the process.parent.pid of the powershell process which downloaded and executed UpdaterCore.exe?
+
+We can use the same search as for [L0udBit_27](#l0udbit_27) and just add `process.parent.pid` to the display column:
+
+![](img/L0udBit/20250129202919.png)
+
+> Flag: `5824`
+
+## L0udBit_37
+> What is the process.name of the process with process.pid 5824?
+
+Same search as previous step, just add `process.parent.name` to the display column:
+
+![](img/L0udBit/20250129203145.png)
+
+> Flag: `powershell.exe`
+
+## L0udBit_38
+> Seems that this powershell is the source of quite an enumeration activity. What is the process.command_line of the first process run by powershell with process.pid 5824?
+
+The "trick" was to filter for `process.parent.pid:5824` instead of what task asks, however the first command that we saw is not the answer but second: `C:\Windows\system32\whoami.exe`. The reason is that first command_line that appears is often seen when launching legacy console-based applications and can be ignored. Also the questions stated that command was for enumeration activity which `whoami.exe` definitely belongs to.
+
+![](img/L0udBit/20250129203423.png)
+
+> Flag: `"C:\Windows\system32\whoami.exe"`
+
+## L0udBit_39
+> What is the process.command_line run by adversary to get the name of the Domain controller?
+
+We used previous query and went through commands ran, and tried to figure out something that looked like it could be related to Domain Controller, and `dclist` looked like something related. But then we also checked `nltest.exe` documentation to confirm: https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc731935(v=ws.11).
+
+![](img/L0udBit/20250129204745.png)
+
+> Flag: `"C:\Windows\system32\nltest.exe" /dclist:`
+
+## L0udBit_40
+> What process.command_line was used to find out the public IP address of the compromised computer?
+
+Again, we were looking at the commands from the previous filter, and among `ipconfig`, `whoami.exe` and other commands this one looked like something it could be used to retrieve information about public IP.
+
+![](img/L0udBit/20250129205031.png)
+
+> Flag: `"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" curl ifconfig.me`
+
+## L0udBit_41
+> What is the event.code of the DNS query Sysmon event?
+
+For this we simply used ChatGPT and asked "What is the event.code of the DNS query Sysmon event?". Answer was `22` but to be sure we verified that with the search `event.code:22` and find the log of `curl ifconfig.me` command from previous task:
+
+![](img/L0udBit/20250129221557.png)
+
+> Flag: `22`
