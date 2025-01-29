@@ -16,11 +16,12 @@ We start by opening Kibana Security Alerts page and look for mentioned alert `Po
 ## L0udBit_02
 > What is the severity of the alert?
 
-Looking at the previous screenshot, we see severity is `high`
+Looking at the previous screenshot, we see severity is `high`.
 > Flag: `high`
 
 ## L0udBit_03
 > Who is the author of the rule?
+
 Clicking on the rule name, opens the side panel where we can see the Author.
 
 ![](img/L0udBit/20250129101009.png)
@@ -57,14 +58,14 @@ Searching for `event.id` in the list of fields will not yield anything, but if w
 ## L0udBit_07
 > What is the agent.hostname of the affected computer?
 
-Searching for `agent.hostname` will result in `officeWin9`
+Searching for `agent.hostname` will result in `officeWin9`.
 
 > Flag: `officeWin9`
 
 ## L0udBit_08
 > What is the IP address of the officeWin9 computer? If it has more network adapters, enter the IP which is used for communication with outside world.
 
-Looking for `ip` in the fields, we see several IPs some IPv4, some IPv6. Consuling the [environment](README.md#environment) we see that the office network is `192.168.12.0/24` so we try `192.168.12.119` and it is correct answer.
+Looking for `ip` in the fields, we see several IPs some IPv4, some IPv6. Consuling the [environment](README.md#environment) we see that the office network is `192.168.12.0/24` so we try `192.168.12.119` and it is the correct answer.
 
 ![](img/L0udBit/20250129105829.png)
 
@@ -73,7 +74,7 @@ Looking for `ip` in the fields, we see several IPs some IPv4, some IPv6. Consuli
 ## L0udBit_09
 > What is the name of the user who ran the suspicious powershell script from our initial alert?
 
-Searching for `user.name` in the alert fields, we find `sidonia.borek`
+Searching for `user.name` in the alert fields, we find `sidonia.borek`.
 
 ![](img/L0udBit/20250129110329.png)
 
@@ -82,7 +83,7 @@ Searching for `user.name` in the alert fields, we find `sidonia.borek`
 ## L0udBit_10
 > What is the file.name of the suspicious powershell script?
 
-Searching for `file.name` in the alert fields, we find `winPEAS.ps1`
+Searching for `file.name` in the alert fields, we find `winPEAS.ps1`.
 
 ![](img/L0udBit/20250129110531.png)
 
@@ -91,21 +92,21 @@ Searching for `file.name` in the alert fields, we find `winPEAS.ps1`
 ## L0udBit_11
 > What is the full file.path of the winPEAS.ps1 powershell script?
 
-Searching for `file.path` will reveal `C:\Users\Public\winPEAS.ps1`
+Searching for `file.path` will reveal `C:\Users\Public\winPEAS.ps1`.
 
 > Flag: `C:\Users\Public\winPEAS.ps1`
 
 ## L0udBit_12
 > What does winPEAS mean?
 
-Googling this exact question will return answer: `Windows Privilege Escalation Awesome Scripts`
+Googling this exact question will return answer: `Windows Privilege Escalation Awesome Scripts`.
 
 > Flag: `Windows Privilege Escalation Awesome Scripts`
 
 ## L0udBit_13
 > How the &#@*(# did this script get onto the workstation? What is the CreationUtcTime of the winPEAS.ps1 file? Use exact format as in the message.
 
-For this we need to switch to different dashboard in Kibana so we can search for individual logs. Go to `Analytics->Discovery` and select `winlogbeat-*` in Data view. Then search for `event.category:"file"  AND "winPEAS.ps1"`, ensure timeframe is set to `Wargame`. Only one log will be found, open the log details and in the field search type `CreationUtcTime`
+For this we need to switch to different dashboard in Kibana so we can search for individual logs. Go to `Analytics->Discovery` and select `winlogbeat-*` in Data view. Then search for `event.category:"file"  AND "winPEAS.ps1"`, ensure timeframe is set to `Wargame`. Only one log will be found, open the log details and in the field search type `CreationUtcTime`.
 
 ![](img/L0udBit/20250129111523.png)
 
@@ -114,7 +115,7 @@ For this we need to switch to different dashboard in Kibana so we can search for
 ## L0udBit_14
 > What is the process.name of the process which created winPEAS.ps1 file?
 
-Looking at the `process.name` field, we see it is `powershell.exe`
+Looking at the `process.name` field, we see it is `powershell.exe`.
 
 > Flag: `powershell.exe`
 
@@ -185,7 +186,7 @@ Looking for `md5` in the same log details, will provide the answer.
 
 ![](img/L0udBit/20250129120731.png)
 
-NOTE: in our case `process.hash.md5` is equal to `file.hash.md5` of the executable because it was simply loaded and executed without in-memory modificaiton. However, another way, and maybe more correct, was to filter for `host.name:officewin9` and `file.hash.md5:exists` and search for `UpdaterCore.exe`, which will find the answer:
+NOTE: in our case `process.hash.md5` is equal to `file.hash.md5` of the executable because it was simply loaded and executed without in-memory modification. However, another way, and maybe more correct, was to filter for `host.name:officewin9` and `file.hash.md5:exists` and search for `UpdaterCore.exe`, which will find the answer:
 
 ![](img/L0udBit/20250129121540.png)
 
@@ -224,7 +225,9 @@ NOTE: there is `Family labels` on the VirusTotal `Detection` page that also cont
 ## L0udBit_25
 > OSINT time :) What is the full name of the Havoc developer? Format: Name Surname
 
-I'm not good at OSINT, always get tangled in some rabbit hole. First found the name of the author (Paul) on his web https://5pider.net/about and after reading his whole twitter feed, finally googled `havoc framework "Paul"` which brought me to https://havocframework.com/docs/welcome
+I'm not good at OSINT, always get tangled in some rabbit hole. First found the name of the author (Paul) on his web https://5pider.net/about and after reading his whole twitter feed, finally googled `havoc framework "Paul"` which brought me to https://havocframework.com/docs/welcome:
+
+![](img/L0udBit/20250129174839.png)
 
 > Flag: `Paul Ungur`
 
@@ -281,7 +284,8 @@ But we still do not see `registry.path`, so we go further, set `process.parent.p
 
 ![](img/L0udBit/20250129172318.png)
 
-NOTE: this could be also solved more quickly and intelligently solved by leveraging `MITRE ATT&CK` framework and looking under `Persistence` tactic ("be able to get back to the system"), under the `Boot or Logon Autostart Execution` technique ("even after reboot") and `Registry Run Keys / Startup Folder` sub-technique ("adversary made changes to the registry"): https://attack.mitre.org/techniques/T1547/001/. Right there the listed Windows `run keys` that will cause the program referenced to be executed when a user logs in. So, simply searching for `registry.path:*CurrentVersion\\Run*` would quickly reveal the correct answer.
+NOTE: this could be also solved more quickly and intelligently by leveraging `MITRE ATT&CK` framework and looking under `Persistence` tactic ("be able to get back to the system"), under the `Boot or Logon Autostart Execution` technique ("even after reboot") and `Registry Run Keys / Startup Folder` sub-technique ("adversary made changes to the registry"): https://attack.mitre.org/techniques/T1547/001/. 
+Right there the listed Windows `run keys` that will cause the program referenced to be executed when a user logs in. So, simply searching for `registry.path:*CurrentVersion\\Run*` would quickly reveal the correct answer.
 
 > Flag: `HKU\S-1-5-21-2918068850-3100921079-2521427286-1308\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\WinUpadate`
 
