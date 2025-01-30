@@ -31,7 +31,7 @@ There are 2 office networks, server network and guest wifi, all interconnected w
 
 ## Challenges
 
-* [L0udBit](L0udBit.md) - First scenario, starts with security admin receiving email about potential security threat
+* [L0udBit](L0udBit.md) - First scenario, starts with security admin receiving email about potential security threat and leads us into investigation what had initially happened. The questions in this scenario were designed to get us familiar with the Kibana interface and basic skills digging through logs and constructing queries to pinpoint the right log. There were also few OSINT and deobfuscation question to break the monotony of log digging. 
 
 * Exfil
 
