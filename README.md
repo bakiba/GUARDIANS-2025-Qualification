@@ -1,8 +1,8 @@
-# Guardians 2025 Qulification Writeup
+# Guardians 2025 Qualification Writeup
 
 ## Introduction
 
-This repository contains writeup for the [Guardians 2025 Qualification](https://github.com/bakiba/GUARDIANS-2025-Qualification.git) round held online from January 20th to February 5th.
+This repository contains writeup for the [Guardians 2025 Qualification](https://www.guardians.sk/guardians2025/) round held online from January 20th to February 5th.
 
 Guardians competition, organized by [Binary Confidence](https://www.binaryconfidence.com/) is Capture the Flag (CTF) style competition focused on Digital Forensics, Incident Response and Threat hunting, where teams try to trace back steps attacker took to compromise the environment, explain how, when, who and what. 
 
@@ -33,7 +33,7 @@ There are 2 office networks, server network and guest wifi, all interconnected w
 
 * [L0udBit](L0udBit.md) - First scenario, starts with security admin receiving email about potential security threat and leads us into investigation what had initially happened. The questions in this scenario were designed to get us familiar with the Kibana interface and basic skills digging through logs and constructing queries to pinpoint the right log. There were also few OSINT and deobfuscation question to break the monotony of log digging. 
 
-* Exfil
+* [Exfil](Exfil.md) - 
 
 * Lateral
 
