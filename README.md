@@ -35,10 +35,10 @@ There are 2 office networks, server network and guest wifi, all interconnected w
 
 * [Exfil](Exfil.md) - After establishing persistence in the first scenario, attacker continues with privilege escalation by exploiting unpatched vulnerability in Windows, dumping memory and browser credentials and exfiltrating those with other potentially valuable documents to suspicious destination.
 
-* Lateral
+* [Lateral](Lateral.md) - 
 
-* Persistence
+* [Persistence](Persistence.md)
 
-* SummerLove
+* [SummerLove](SummerLove.md)
 
-* DayOff
+* [DayOff](DayOff.md)
