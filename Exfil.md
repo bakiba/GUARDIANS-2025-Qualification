@@ -207,11 +207,11 @@ We searched for `UpdatepdCrash.dmp` and looked for logs that try to copy the fil
 ## Exfil_24
 > What was the command used to download rclone and save it on disk?
 
-We tried just searching for `rclone` and lot of logs were returned that had the `process.command_line` that had reference to `revshell.txt` and no much of info in other fields were displaying:
+We just tried searching for `rclone` and lot of logs were returned that had referenced the `revshell.txt` in the `process.command_line` field and not much info in other fields:
 
 ![](img/Exfil/20250203161024.png)
 
-We figured that this means `rclone` was executed from the reverse shell and that command details are in some other field, so we looked at log details of the oldest log and noticed that `powershell.file.script_block_text` contains what we were looking for:
+We figured that this means `rclone` was executed from the reverse shell and that command details might be in some other field, so we looked at log details of the oldest log and noticed that `powershell.file.script_block_text` contains what we were looking for:
 
 ![](img/Exfil/20250203161236.png)
 
@@ -281,7 +281,7 @@ Searching for `gimmedat.bat` and looking at the logs, we see that first document
 ## Exfil_32
 > How many unique documents were exfiltrated?
 
-From previous task that searched for `gimmdat.bat`, added filter for `process.name: curl`, then checked under Field statistics for distinct values of `process.command_line.text`
+From previous task that searched for `gimmdat.bat`, added filter for `process.name: curl.exe`, then checked under Field statistics for distinct values of `process.command_line.text`
 
 ![](img/Exfil/20250203163358.png)
 
