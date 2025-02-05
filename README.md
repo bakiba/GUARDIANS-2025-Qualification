@@ -35,7 +35,7 @@ There are 2 office networks, server network and guest wifi, all interconnected w
 
 * [Exfil](Exfil.md) - After establishing persistence in the first scenario, attacker continues with privilege escalation by exploiting unpatched vulnerability in Windows, dumping memory and browser credentials and exfiltrating those with other potentially valuable documents to suspicious destination.
 
-* [Lateral](Lateral.md) - 
+* [Lateral](Lateral.md) - In the phase, attacker scanned rest of the office network in order to move laterally, obtained domain admin credentials and gained access to Domain Controller, where he installed remote access tool and performed credential dump.
 
 * [Persistence](Persistence.md)
 
