@@ -35,10 +35,10 @@ There are 2 office networks, server network and guest wifi, all interconnected w
 
 * [Exfil](Exfil.md) - After establishing persistence in the first scenario, attacker continues with privilege escalation by exploiting unpatched vulnerability in Windows, dumping memory and browser credentials and exfiltrating those with other potentially valuable documents to suspicious destination.
 
-* [Lateral](Lateral.md) - In this phase, attacker scanned rest of the office network in order to move laterally, obtained domain admin credentials and gained access to Domain Controller, where he installed remote access tool and performed credential dump.
+* [Lateral](Lateral.md) - In this phase, attacker scanned rest of the office network in order to move laterally, obtained domain admin credentials and gained access to Domain Controller and performed credential dump.
 
-* [Persistence](Persistence.md)
+* [Persistence](Persistence.md) - After obtaining access to Domain Controller, attacker installed remote access tool there, spread C2 malware via GPO and obtained TGT from Domain Controller.
 
-* [SummerLove](SummerLove.md)
+* [SummerLove](SummerLove.md) - After attacker was finished with Domain Controllers, he moved to MS Exchange server where he was unsuccessful with obtaining Exchange mailbox.
 
 * [DayOff](DayOff.md)
