@@ -41,4 +41,9 @@ There are 2 office networks, server network and guest wifi, all interconnected w
 
 * [SummerLove](SummerLove.md) - After attacker was finished with Domain Controllers, he moved to MS Exchange server where he was unsuccessful with obtaining Exchange mailbox.
 
-* [DayOff](DayOff.md)
+* [DayOff](DayOff.md) - After unsuccessful exfiltration attempt on Exchange server, attacker decided to deploy ransomware across the domain, impacting number of office computers and encrypting many files.
+
+## Top 10 teams
+Chart of quickest top 10 teams that gained most points.
+![](img/Top%2010%20Teams.png)
+
