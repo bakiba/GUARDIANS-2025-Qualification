@@ -6,7 +6,7 @@ This repository contains writeup for the [Guardians 2025 Qualification](https://
 
 Guardians competition, organized by [Binary Confidence](https://www.binaryconfidence.com/) is Capture the Flag (CTF) style competition focused on Digital Forensics, Incident Response and Threat hunting, where teams try to trace back steps attacker took to compromise the environment, explain how, when, who and what. 
 
-There are several challenge scenarios, each one having multiple questions that teams need to find the answer by uncovering evindence from security logs gathered by the simulated tipical business environemnt and stored in the Elastic SIEM/Kibana.
+There are several challenge scenarios, each one having multiple questions that teams need to find the answer by uncovering evidence from security logs gathered by the simulated typical business environemnt and stored in the Elastic SIEM/Kibana.
 
 ## Environment
 
